@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: dustynv/ollama:r36.2.0  # Jetson-optimized; adjust tag for your JetPack (e.g., r35.4.1 for older)
+    container_name: ollama
+    runtime: nvidia
+    network_mode: host  # Uses host network for port 11434
+    volumes:
+      - /mnt/ssd/ollama:/root/.ollama
+    restart: unless-stopped
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    network_mode: host  # Uses host network for port 3000
+    volumes:
+      - /mnt/ssd/open-webui:/app/backend/data
+    environment:
+      - OLLAMA_API_BASE=http://127.0.0.1:11434
+    depends_on:
+      - ollama
+    restart: unless-stopped
