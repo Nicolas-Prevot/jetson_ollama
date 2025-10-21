@@ -10,6 +10,7 @@ services:
       - /mnt/ssd/ollama:/data
     environment:
       - OLLAMA_MODELS=/data/models/ollama/models
+    command: ollama serve
     restart: unless-stopped
 
   open-webui:
