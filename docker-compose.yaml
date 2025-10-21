@@ -7,7 +7,9 @@ services:
     runtime: nvidia
     network_mode: host  # Uses host network for port 11434
     volumes:
-      - /mnt/ssd/ollama:/root/.ollama
+      - /mnt/ssd/ollama:/data
+    environment:
+      - OLLAMA_MODELS=/data/models/ollama/models
     restart: unless-stopped
 
   open-webui:
