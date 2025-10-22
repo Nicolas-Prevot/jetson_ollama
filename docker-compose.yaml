@@ -4,6 +4,10 @@ services:
     container_name: ollama
     ports:
       - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     volumes:
       - ollama_data:/root/.ollama
     deploy:
@@ -16,17 +20,17 @@ services:
     restart: unless-stopped
   openwebui:
     image: ghcr.io/open-webui/open-webui:main
-    container_name: openwebui
+    container_name: open-webui
     restart: unless-stopped
+    depends_on:
+      - ollama
     ports:
       - "3000:8080"
     volumes:
       - openwebui_data:/app/backend/data
     environment:
       - WEBUI_AUTH=False
-      - OLLAMA_BASE_URL=http://host.docker.internal:11434
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - OLLAMA_BASE_URL=http://ollama:11434
 
 volumes:
   ollama_data:
