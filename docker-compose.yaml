@@ -1,15 +1,11 @@
 services:
   ollama:
-    image: dustynv/ollama:r36.4.0
+    image: ollama/ollama
     container_name: ollama
-    runtime: nvidia
-    volumes:
-      - /mnt/ssd/ollama:/data
-    environment:
-      - OLLAMA_MODELS=/data/models/ollama/models
-    command: ollama serve
     ports:
       - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
     deploy:
       resources:
         reservations:
@@ -18,19 +14,19 @@ services:
               count: all
               capabilities: [gpu]
     restart: unless-stopped
-
-  open-webui:
+  openwebui:
     image: ghcr.io/open-webui/open-webui:main
-    container_name: open-webui
-    volumes:
-      - /mnt/ssd/open-webui:/app/backend/data
-    environment:
-      - OLLAMA_BASE_URL=http://ollama:11434
-      - WEBUI_AUTH=False
-    depends_on:
-      - ollama
+    container_name: openwebui
+    restart: unless-stopped
     ports:
       - "3000:8080"
+    volumes:
+      - ./openwebui_data:/app/backend/data
+    environment:
+      - WEBUI_AUTH=False
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
     extra_hosts:
-      - host.docker.internal:host-gateway
-    restart: unless-stopped
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  ollama_data:
