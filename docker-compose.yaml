@@ -1,6 +1,6 @@
 services:
   ollama:
-    image: ollama/ollama
+    image: ollama/ollama:latest
     container_name: ollama
     ports:
       - "11434:11434"
@@ -21,12 +21,14 @@ services:
     ports:
       - "3000:8080"
     volumes:
-      - ./openwebui_data:/app/backend/data
+      - openwebui_data:/app/backend/data
     environment:
       - WEBUI_AUTH=False
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
 
 volumes:
   ollama_data:
+  openwebui_data:
